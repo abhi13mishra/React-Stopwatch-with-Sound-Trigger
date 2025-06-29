@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 p-10">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      function Stopwatch() {
+        const [seconds, setSeconds] = React.useState(0);
+        const [isRunning, setIsRunning] = React.useState(false);
+
+        const sound = new Audio("https://www.soundjay.com/button/sounds/beep-07.mp3");
+
+        React.useEffect(() => {
+          let timer = null;
+
+          if (isRunning) {
+            timer = setInterval(() => {
+              setSeconds(prev => {
+                const next = prev + 1;
+                if (next === 10) {
+                  sound.play();
+                }
+                return next;
+              });
+            }, 1000);
+          }
+
+          return () => clearInterval(timer);
+        }, [isRunning]);
+
+        return (
+          <div className="max-w-sm mx-auto bg-white p-6 rounded-xl shadow-md text-center">
+            <h1 className="text-2xl font-bold mb-4">⏱ Stopwatch</h1>
+            <div className="text-4xl font-mono mb-6">{seconds}s</div>
+            <div className="flex justify-center space-x-4">
+              <button
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                onClick={() => setIsRunning(true)}
+              >
+                Start
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                onClick={() => setIsRunning(false)}
+              >
+                Stop
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<Stopwatch />);
+    </script>
+  </body>
+</html>
